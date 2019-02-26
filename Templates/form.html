@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+            <form action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data" >
+                <input type="file" name="fileUpload" id="fileUpload">
+                <button id="submitButton"  onclick="uploadData()">Upload</button><br>
+            </form>
+            Directory name:<input type="text" id = "folderName" placeholder="Enter the directory name">
+            <button id = "addFolder" name="addFolder" onclick="addFolder()">Add Directory</button>
+            
+        <div>
+            
+        </div>
+    <script>
+    window.onload = function(){
+        ajax_get()
+    } 
+
+    function uploadData(){
+    var formInput = document.getElementById("fileUpload")
+    var file = formInput.files[0];
+    console.log(file)
+    var formData = new FormData()
+    formData.append("fileUpload",file)
+    console.log(formData)
+    var method = "POST"
+    var url = "/upload"
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, url, true);
+    xhr.onload = function () {
+	//var jsonResponse = JSON.parse(xhr.responseText);
+	if (xhr.readyState == 4 && xhr.status == "200") {
+        console.log(xhr.responseText); 
+	} 
+    else {
+		console.error(xhr.responseText);
+	}
+}
+    xhr.send(formData);    
+}  
+
+
+function addFolder(){
+    var xhr = new XMLHttpRequest();
+    var folder_name = document.getElementById('folderName').value;
+    folder_name = ({"folderName":String(folder_name)})
+    param = JSON.stringify(folder_name)
+    xhr.open('POST','/add-directory');
+    xhr.setRequestHeader('Content-type', 'application/json');
+    console.log(folder_name)
+    xhr.onload = function(){
+        console.log(xhr.responseText);
+    }
+    xhr.send(param)
+}
+
+
+//function 
+
+
+function ajax_get(){
+var xhr = new XMLHttpRequest();
+xhr.open('GET', '/get', true);
+xhr.onload  = function() {
+    console.log(xhr.responseText);
+};
+xhr.send(null);
+}    
+
+    </script>
+    </body>
+</html>
